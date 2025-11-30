@@ -6,7 +6,7 @@ import numpy as np
 
 
 #------------------load wav
-x = torch.from_numpy(sf.read('./inp_16k.wav', dtype='float32')[0])
+x = torch.from_numpy(sf.read('input.wav', dtype='float32')[0])
 x = torch.stft(x, 512, 256, 512, torch.hann_window(512).pow(0.5), return_complex=False)[None]
 
 
@@ -36,4 +36,4 @@ for i in range(inputs.shape[-2]):
 outputs = np.concatenate(outputs, axis=2)
 enhanced = istft(outputs[..., 0] + 1j * outputs[..., 1], n_fft=512, hop_length=256, win_length=512,
                  window=np.hanning(512) ** 0.5)
-sf.write('./out_16k.wav', enhanced.squeeze(), 16000)
+sf.write('out.wav', enhanced.squeeze(), 16000)

@@ -16,7 +16,7 @@ sess_options.execution_mode = ort.ExecutionMode.ORT_SEQUENTIAL
 
 
 ort_session = ort.InferenceSession(
-    "./denoiser_model.onnx",
+    "denoiser_model.onnx",
     sess_options,
     providers=["CPUExecutionProvider"],
 )
@@ -24,13 +24,10 @@ ort_session = ort.InferenceSession(
 input_names = ["input_frame", "states", "atten_lim_db"]
 output_names = ["enhanced_audio_frame", "new_states", "lsnr"]
 
-
-
-
 #------------------------------load wav
 hop_size = 480
 fft_size = 960
-input_audio, sr = torchaudio.load('./inp.wav', channels_first=True)
+input_audio, sr = torchaudio.load('input.wav', channels_first=True)
 input_audio = input_audio.mean(dim=0).unsqueeze(0)  # stereo to mono
 
 input_audio = input_audio.squeeze(0)
@@ -58,7 +55,6 @@ for frame in chunked_audio:
     state = out[1]
 
 
-
 #-------------------------------save
 enhanced_audio = torch.cat(enhanced).unsqueeze(
     0
@@ -72,5 +68,5 @@ torchaudio.save(
     enhanced_audio,
     sr,
     encoding="PCM_S",
-    bits_per_sample=16,
+    bits_per_sample=48,
 )
